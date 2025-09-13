@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
     return response.data
   }
 
-  //Log out a user
+  //Log out  user
   async function logoutUser() {
     const response = await api.post('/logout')
     localStorage.removeItem('token') // Clear from localStorage
