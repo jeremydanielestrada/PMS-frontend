@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import SideNavigation from './SideNavigation.vue'
-import { useAuthStore } from '@/stores/Auth'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 //Load Variables
 //Set theme
