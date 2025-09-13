@@ -1,24 +1,61 @@
-<script setup></script>
+<script setup>
+import { ref } from 'vue'
+import { useAuthStore } from '@/stores/Auth'
+
+//Load variables
+const authStore = useAuthStore()
+
+const isLoading = ref(false)
+
+const errorSubmit = ref(null)
+
+const formDataDefault = {
+  email: null,
+  password: null,
+}
+
+const formData = ref({
+  ...formDataDefault,
+})
+
+const handleSubmit = async () => {
+  isLoading.value = true
+  try {
+    const response = await authStore.loginUser(formData.value)
+    formData.value = { ...formDataDefault }
+
+    if (response) console.log('Login Sucessfully')
+  } catch (error) {
+    console.log(error, 'Error logging in')
+    errorSubmit.value = error.response?.data.message
+  } finally {
+    isLoading.value = false
+  }
+}
+</script>
 
 <template>
-  <v-form fast-fail @submit.prevent>
+  <v-form fast-fail @submit.prevent="handleSubmit">
     <v-row dense>
       <v-col cols="12">
         <v-text-field
-          v-model="email"
+          v-model="formData.email"
           label="Email"
           prepend-inner-icon="mdi-email-outline"
+          :error-messages="errorSubmit"
         ></v-text-field>
       </v-col>
       <v-col cols="12">
         <v-text-field
-          v-model="password"
+          v-model="formData.password"
           label="Password"
           type="password"
           prepend-inner-icon="mdi-lock-outline"
+          :error-messages="errorSubmit"
+          required
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-btn class="mt-2" type="submit" color="blue" block>Submit</v-btn>
+    <v-btn class="mt-2" type="submit" color="blue" :loading="isLoading" block>Submit</v-btn>
   </v-form>
 </template>

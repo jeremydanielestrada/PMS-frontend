@@ -1,8 +1,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import SideNavigation from './SideNavigation.vue'
+import { useAuthStore } from '@/stores/Auth'
 
+//Load Variables
 //Set theme
+const isUserLogged = ref(false)
+const authStore = useAuthStore()
+
 const theme = ref(localStorage.getItem('theme') ?? 'light')
 
 const isDrawerOpen = ref(false)
@@ -13,6 +18,11 @@ const onclickTheme = () => {
   theme.value = theme.value === 'light' ? 'dark' : 'light'
   localStorage.setItem('theme', theme.value)
 }
+
+//Check if user is logged in
+onMounted(() => {
+  if (authStore.isAuthenticated) isUserLogged.value = true
+})
 
 //read drawer state
 onMounted(() => {
@@ -33,7 +43,7 @@ const toggleDrawer = () => {
     <v-app :theme="theme">
       <SideNavigation v-model:isDrawerOpen="isDrawerOpen" />
       <v-app-bar>
-        <v-app-bar-nav-icon @click="toggleDrawer" />
+        <v-app-bar-nav-icon @click="toggleDrawer" v-if="isUserLogged" />
         <v-spacer></v-spacer>
         <v-btn
           :prepend-icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
