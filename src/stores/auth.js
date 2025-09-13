@@ -5,21 +5,50 @@ import api from '@/services/api'
 export const useAuthStore = defineStore('auth', () => {
   //Check if user is authenticated
   const token = ref(localStorage.getItem('token'))
+  const userData = ref(null)
+  const allUsers = ref([])
+
+  //getters
   const isAuthenticated = computed(() => !!token.value)
+
+  //Get all users
+  async function getAllUsers() {
+    const response = await api.get('/users')
+    allUsers.value = response.data
+    return response.data
+  }
 
   //Login user
   async function loginUser(formData) {
-    const response = await api.post('/login', formData)
-    token.value = response.data.token
-    localStorage.setItem('token', response.data.token)
-    return response.data
+    try {
+      const response = await api.post('/login', formData)
+
+      // Only set data if response is successful
+      if (response.data && response.data.token) {
+        token.value = response.data.token
+        userData.value = response.data.user
+        localStorage.setItem('token', response.data.token)
+        localStorage.setItem('user', JSON.stringify(response.data.user))
+        return response.data
+      } else {
+        throw new Error('Invalid login response')
+      }
+    } catch (error) {
+      // Clear any existing data on failed login
+      token.value = null
+      userData.value = null
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      throw error // Re-throw to be handled by component
+    }
   }
 
   //Register  user
   async function registerUser(formData) {
     const response = await api.post('/register', formData)
-    localStorage.setItem('token', response.data.token)
+    userData.value = response.data.user
     token.value = response.data.token
+    localStorage.setItem('token', response.data.token)
     return response.data
   }
 
@@ -36,11 +65,14 @@ export const useAuthStore = defineStore('auth', () => {
     loginUser,
     logoutUser,
     registerUser,
+    getAllUsers,
 
     //Getters,
     isAuthenticated,
 
     //States
     token,
+    userData,
+    allUsers,
   }
 })

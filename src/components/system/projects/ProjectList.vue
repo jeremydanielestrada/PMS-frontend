@@ -11,6 +11,23 @@ onMounted(() => {
 
 <template>
   <v-row>
+    <v-col cols="12" sm="4">
+      <h1>Projects</h1>
+    </v-col>
+    <v-spacer></v-spacer>
+    <v-col cols="12" md="4" class="d-flex ga-2">
+      <v-text-field
+        label="Search"
+        variant="outlined"
+        prepend-inner-icon="mdi-magnify"
+        density="compact"
+      ></v-text-field>
+      <v-btn icon class="mb-5">
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </v-col>
+  </v-row>
+  <v-row>
     <v-col cols="12" v-for="project in projectStore.projects" :key="project.id">
       <v-card>
         <v-card-title>{{ project.name }}</v-card-title>
