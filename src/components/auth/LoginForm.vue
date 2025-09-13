@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/Auth'
+import { useRouter } from 'vue-router'
 
 //Load variables
 const authStore = useAuthStore()
@@ -8,6 +9,8 @@ const authStore = useAuthStore()
 const isLoading = ref(false)
 
 const errorSubmit = ref(null)
+
+const router = useRouter()
 
 const formDataDefault = {
   email: null,
@@ -22,9 +25,10 @@ const handleSubmit = async () => {
   isLoading.value = true
   try {
     const response = await authStore.loginUser(formData.value)
-    formData.value = { ...formDataDefault }
-
-    if (response) console.log('Login Sucessfully')
+    if (response) {
+      formData.value = { ...formDataDefault }
+      router.replace('/projects')
+    }
   } catch (error) {
     console.log(error, 'Error logging in')
     errorSubmit.value = error.response?.data.message

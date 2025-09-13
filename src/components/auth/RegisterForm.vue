@@ -1,24 +1,59 @@
 <script setup>
 import { ref } from 'vue'
+import { useAuthStore } from '@/stores/Auth'
+import { useRouter } from 'vue-router'
+
+//Load Variables
+const authStore = useAuthStore()
+const router = useRouter()
+
+const isLoading = ref(false)
+const errorSubmit = ref(null)
 
 const isPasswordVisible = ref(false)
 const isPasswordConfirmVisible = ref(false)
 
-const password = ref('')
+const formDataDefault = {
+  first_name: null,
+  last_name: null,
+  email: null,
+  password: null,
+  password_confirmation: null,
+  role: 'user',
+}
+
+const formData = ref({
+  ...formDataDefault,
+})
+
+const handleSubmit = async () => {
+  isLoading.value = true
+  try {
+    const response = await authStore.registerUser(formData.value)
+
+    if (response) {
+      formData.value = { ...formDataDefault }
+      router.replace('/projects')
+    }
+  } catch (error) {
+    errorSubmit.value = error.response?.data?.message
+    console.log(errorSubmit)
+  }
+}
 </script>
 
 <template>
-  <v-form fast-fail @submit.prevent>
+  <v-form fast-fail @submit.prevent="handleSubmit">
     <v-row dense>
       <v-col cols="12" sm="6">
-        <v-text-field v-model="first_name" label="First Name" type="text"></v-text-field>
+        <v-text-field v-model="formData.first_name" label="First Name" type="text"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6">
-        <v-text-field v-model="last_name" label="Last Name" type="text"></v-text-field>
+        <v-text-field v-model="formData.last_name" label="Last Name" type="text"></v-text-field>
       </v-col>
       <v-col cols="12">
         <v-text-field
-          v-model="email"
+          v-model="formData.email"
           label="Email"
           type="email"
           prepend-inner-icon="mdi-email-outline"
@@ -26,7 +61,7 @@ const password = ref('')
       </v-col>
       <v-col cols="12">
         <v-text-field
-          v-model="password"
+          v-model="formData.password"
           label="Password"
           :type="isPasswordVisible ? 'text' : 'password'"
           @click:append-inner="isPasswordVisible = !isPasswordVisible"
@@ -36,7 +71,7 @@ const password = ref('')
       </v-col>
       <v-col cols="12">
         <v-text-field
-          v-model="password_confirmation"
+          v-model="formData.password_confirmation"
           label="Confirm Password"
           :type="isPasswordConfirmVisible ? 'text' : 'password'"
           @click:append-inner="isPasswordConfirmVisible = !isPasswordConfirmVisible"
@@ -45,6 +80,6 @@ const password = ref('')
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-btn class="mt-2" type="submit" color="blue" block>Sign In</v-btn>
+    <v-btn class="mt-2" type="submit" color="blue" :loading="isLoading" block>Sign In</v-btn>
   </v-form>
 </template>
