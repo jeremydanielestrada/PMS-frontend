@@ -6,7 +6,7 @@ export const useAuthStore = defineStore('auth', () => {
   //Check if user is authenticated
   const token = ref(localStorage.getItem('token'))
   const userData = ref(null)
-  const allUsers = ref([])
+  const allUsers = ref(null)
 
   //getters
   const isAuthenticated = computed(() => !!token.value)
