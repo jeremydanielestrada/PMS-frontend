@@ -2,6 +2,7 @@
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { VDateInput } from 'vuetify/labs/VDateInput'
 
 import App from './App.vue'
 import router from './router'
@@ -14,7 +15,10 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
 const vuetify = createVuetify({
-  components,
+  components: {
+    ...components,
+    VDateInput,
+  },
   directives,
 })
 

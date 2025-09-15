@@ -1,9 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useProjectStore } from '@/stores/project'
+import ProjectsDialog from './ProjectsDialog.vue'
 
 //Load variables
 const projectStore = useProjectStore()
+
+const isDialogVisible = ref(false)
 onMounted(() => {
   projectStore.getProjects()
 })
@@ -22,7 +25,7 @@ onMounted(() => {
         prepend-inner-icon="mdi-magnify"
         density="compact"
       ></v-text-field>
-      <v-btn icon class="mb-5">
+      <v-btn icon class="mb-5" @click="isDialogVisible = !isDialogVisible">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </v-col>
@@ -39,4 +42,5 @@ onMounted(() => {
       </v-card>
     </v-col>
   </v-row>
+  <ProjectsDialog v-model:isDialogVisible="isDialogVisible" />
 </template>
