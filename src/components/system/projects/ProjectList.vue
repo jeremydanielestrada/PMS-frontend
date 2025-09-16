@@ -39,6 +39,14 @@ onMounted(() => {
           <p>{{ project.description }}</p>
           <small>{{ project.due_date }}</small>
         </v-card-text>
+        <v-card-actions>
+          <v-btn icon>
+            <v-icon>mdi-trash-can-outline</v-icon>
+          </v-btn>
+          <v-btn icon>
+            <v-icon>mdi-pencil-outline</v-icon>
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-col>
   </v-row>
