@@ -4,6 +4,7 @@ import api from '@/services/api'
 
 export const useProjectStore = defineStore('project', () => {
   const projects = ref(null)
+  const projectMembers = ref([])
 
   //Get Projects
   async function getProjects() {
@@ -41,14 +42,40 @@ export const useProjectStore = defineStore('project', () => {
     }
   }
 
+  async function getProjectMembers() {
+    const response = api.get('/project-members')
+
+    if (response) projectMembers.value = response.data
+
+    return response.data
+  }
+
+  async function addProjectMembers(formData) {
+    try {
+      const response = api.post('/project-members', formData)
+      if (response.data) getProjectMembers()
+    } catch (error) {
+      console.log(error, 'Error adding members')
+    }
+  }
+
+  async function deleteProjectMembers(id) {
+    const response = api.post(`/project-members${id}`)
+    if (response) getProjectMembers()
+  }
+
   return {
     //States
     projects,
+    projectMembers,
 
     //Actions
     getProjects,
+    getProjectMembers,
     addProjects,
+    addProjectMembers,
     updateProject,
     deleteProject,
+    deleteProjectMembers,
   }
 })
