@@ -30,7 +30,7 @@ onMounted(() => {
 watch(
   () => isUserLogged.value,
   () => {
-    isDrawerOpen.value = true
+    isDrawerOpen.value = isUserLogged.value
   },
 )
 
@@ -53,7 +53,6 @@ const signOut = async () => {
   try {
     await authStore.logoutUser()
     isUserLogged.value = false // Update local state
-    isDrawerOpen.value = false
     router.replace('/')
   } catch (error) {
     console.error('Logout error:', error)
