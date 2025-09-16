@@ -12,7 +12,7 @@ const router = useRouter()
 
 const theme = ref(localStorage.getItem('theme') ?? 'light')
 
-const isDrawerOpen = ref(false)
+const isDrawerVisible = ref(false)
 const isLoading = ref(false)
 
 localStorage.getItem('theme')
@@ -30,7 +30,7 @@ onMounted(() => {
 watch(
   () => isUserLogged.value,
   () => {
-    isDrawerOpen.value = isUserLogged.value
+    isDrawerVisible.value = isUserLogged.value
   },
 )
 
@@ -38,13 +38,13 @@ watch(
 onMounted(() => {
   const savedDrawerState = localStorage.getItem('drawer')
   if (savedDrawerState !== null) {
-    isDrawerOpen.value = savedDrawerState === 'true'
+    isDrawerVisible.value = savedDrawerState === 'true'
   }
 })
 
 const toggleDrawer = () => {
-  isDrawerOpen.value = !isDrawerOpen.value
-  localStorage.setItem('drawer', isDrawerOpen.value)
+  isDrawerVisible.value = !isDrawerVisible.value
+  localStorage.setItem('drawer', isDrawerVisible.value)
 }
 
 //Sign out a user
@@ -65,7 +65,7 @@ const signOut = async () => {
 <template>
   <v-responsive class="border rounded">
     <v-app :theme="theme">
-      <SideNavigation v-model:isDrawerOpen="isDrawerOpen" />
+      <SideNavigation v-model:isDrawerVisible="isDrawerVisible" />
       <v-app-bar>
         <v-app-bar-nav-icon @click="toggleDrawer" v-if="isUserLogged" />
         <v-spacer></v-spacer>

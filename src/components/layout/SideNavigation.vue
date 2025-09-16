@@ -1,12 +1,13 @@
 <script setup>
 import { computed } from 'vue'
-const emits = defineEmits(['toggleDrawer'])
 
-const props = defineProps(['isDrawerOpen'])
+//Load props and emitters
+const props = defineProps(['isDrawerVisible'])
+const emit = defineEmits(['update:isDrawerVisible'])
 
 const drawer = computed({
-  get: () => props.isDrawerOpen,
-  set: (value) => emits('toggleDrawer', value),
+  get: () => props.isDrawerVisible,
+  set: (value) => emit('update:isDrawerVisible', value),
 })
 </script>
 
