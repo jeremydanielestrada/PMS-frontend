@@ -1,11 +1,11 @@
 <script setup>
 import { computed } from 'vue'
-const props = defineProps(['text', 'isModalVisible', 'title'])
-const emits = defineEmits(['update:isModalVisible', 'confirm'])
+const props = defineProps(['text', 'isConfirmVisible', 'title'])
+const emits = defineEmits(['update:isConfirmVisible', 'confirm'])
 
 const modal = computed({
-  get: () => props.isModalVisible,
-  set: (value) => emits('update:isModalVisible', value),
+  get: () => props.isConfirmVisible,
+  set: (value) => emits('update:isConfirmVisible', value),
 })
 
 const confirmAction = () => {

@@ -2,11 +2,25 @@
 import { ref, onMounted } from 'vue'
 import { useProjectStore } from '@/stores/project'
 import ProjectsDialog from './ProjectsDialog.vue'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 
 //Load variables
 const projectStore = useProjectStore()
 
 const isDialogVisible = ref(false)
+const isConfirmVisible = ref(false)
+const selectedProjectId = ref(null)
+
+const handleDelete = async () => {
+  if (selectedProjectId.value !== null) await projectStore.deleteProject(selectedProjectId.value)
+  isConfirmVisible.value = false
+  selectedProjectId.value = null
+}
+
+const deleteDialog = (id) => {
+  isConfirmVisible.value = true
+  selectedProjectId.value = id
+}
 onMounted(() => {
   projectStore.getProjects()
 })
@@ -40,7 +54,7 @@ onMounted(() => {
           <small>{{ project.due_date }}</small>
         </v-card-text>
         <v-card-actions>
-          <v-btn icon>
+          <v-btn icon @click="deleteDialog(project.id)">
             <v-icon>mdi-trash-can-outline</v-icon>
           </v-btn>
           <v-btn icon>
@@ -48,7 +62,13 @@ onMounted(() => {
           </v-btn>
         </v-card-actions>
       </v-card>
+      <ConfirmDialog
+        title="Delete Project?"
+        text="Confirm to delete"
+        @confirm="handleDelete"
+        v-model:isConfirmVisible="isConfirmVisible"
+      />
     </v-col>
   </v-row>
-  <ProjectsDialog v-model:isDialogVisible="isDialogVisible" />
+  <ProjectsDialog v-model:isDialogVisible="isDialogVisible" projectData />
 </template>

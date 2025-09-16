@@ -34,8 +34,8 @@ export const useProjectStore = defineStore('project', () => {
   }
 
   async function deleteProject(id) {
-    const response = await api.post(`/projects/${id}`)
-    if (response.data) {
+    const response = await api.delete(`/projects/${id}`)
+    if (response) {
       getProjects()
     } else {
       console.log(response?.error.message)
