@@ -56,6 +56,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function logoutUser() {
     const response = await api.post('/logout')
     localStorage.removeItem('token') // Clear from localStorage
+    localStorage.removeItem('user') // Clear from localStorage
     token.value = null // Clear reactive ref
     return response.data
   }
