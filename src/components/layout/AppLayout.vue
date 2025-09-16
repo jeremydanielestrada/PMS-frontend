@@ -5,7 +5,6 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 //Load Variables
-//Set theme
 const isUserLogged = ref(false)
 const authStore = useAuthStore()
 const router = useRouter()
@@ -17,6 +16,7 @@ const isLoading = ref(false)
 
 localStorage.getItem('theme')
 
+//Set theme
 const onclickTheme = () => {
   theme.value = theme.value === 'light' ? 'dark' : 'light'
   localStorage.setItem('theme', theme.value)
@@ -53,6 +53,7 @@ const signOut = async () => {
   try {
     await authStore.logoutUser()
     isUserLogged.value = false // Update local state
+    localStorage.removeItem('drawer')
     router.replace('/')
   } catch (error) {
     console.error('Logout error:', error)

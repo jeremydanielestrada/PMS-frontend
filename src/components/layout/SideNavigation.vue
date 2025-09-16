@@ -14,7 +14,7 @@ const drawer = computed({
 <template>
   <v-navigation-drawer v-model="drawer">
     <v-list>
-      <v-list-item title="Navigation drawer"></v-list-item>
+      <v-list-item title="Projects"></v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
