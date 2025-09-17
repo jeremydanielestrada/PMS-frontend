@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 const props = defineProps(['text', 'isConfirmVisible', 'title', 'isLoading', 'subject'])
 const emits = defineEmits(['update:isConfirmVisible', 'confirm'])
 
@@ -12,7 +12,6 @@ const confirmAction = () => {
   emits('confirm')
   modal.value = false
 }
-const loader = ref(true)
 </script>
 
 <template>

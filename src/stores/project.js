@@ -17,7 +17,7 @@ export const useProjectStore = defineStore('project', () => {
   async function addProjects(formData) {
     try {
       const response = await api.post('/projects', formData)
-      if (response.status === 200) getProjects()
+      if (response) getProjects()
     } catch (error) {
       console.log(error.response?.data?.message)
     }
@@ -27,7 +27,7 @@ export const useProjectStore = defineStore('project', () => {
   async function updateProject(id, formData) {
     try {
       const response = await api.put(`projects/${id}`, formData)
-      if (response.status === 200) getProjects()
+      if (response) getProjects()
       console.log(response)
     } catch (error) {
       console.log(error.response?.data?.message)
@@ -36,7 +36,7 @@ export const useProjectStore = defineStore('project', () => {
 
   async function deleteProject(id) {
     const response = await api.delete(`/projects/${id}`)
-    if (response.status === 200) {
+    if (response) {
       getProjects()
     } else {
       console.log(response?.error.message)

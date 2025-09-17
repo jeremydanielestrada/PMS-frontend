@@ -13,6 +13,10 @@ const selectedProjectId = ref(null)
 const projectData = ref(null)
 const isLoading = ref(false)
 
+onMounted(() => {
+  projectStore.getProjects()
+})
+
 const addProject = () => {
   isDialogVisible.value = true
   projectData.value = null
@@ -34,9 +38,6 @@ const deleteDialog = (id) => {
   isConfirmVisible.value = true
   selectedProjectId.value = id
 }
-onMounted(() => {
-  projectStore.getProjects()
-})
 </script>
 
 <template>
