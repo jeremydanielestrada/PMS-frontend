@@ -99,6 +99,9 @@ const deleteDialog = (id) => {
         v-model:isConfirmVisible="isConfirmVisible"
       />
     </v-col>
+    <v-col cols="12" v-else-if="projectStore.projects?.length === 0">
+      <h3 class="text-center">There is no project</h3>
+    </v-col>
     <v-col cols="12" class="text-center" v-else>
       <v-progress-circular
         color="primary"
