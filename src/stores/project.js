@@ -80,6 +80,7 @@ export const useProjectStore = defineStore('project', () => {
     //States
     projects,
     projectMembers,
+    pagination,
 
     //Actions
     getProjects,

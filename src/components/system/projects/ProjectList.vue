@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useProjectStore } from '@/stores/project'
 import { debounce } from 'lodash'
 import ProjectsDialog from './ProjectsDialog.vue'
@@ -14,12 +14,14 @@ const selectedProjectId = ref(null)
 const projectData = ref(null)
 const isLoading = ref(false)
 const currentPage = ref(1)
-const totalPages = ref(10)
 const searchQuery = ref('')
 
 onMounted(() => {
   projectStore.getProjects()
 })
+
+// Get total pages from store
+const totalPages = computed(() => projectStore.pagination?.last_page || 1)
 
 // Watch for page changes
 watch(currentPage, (newPage) => {
@@ -27,8 +29,8 @@ watch(currentPage, (newPage) => {
 })
 
 //Debounced serach functions
-
 const debouncedSearch = debounce((value) => {
+  currentPage.value = 1
   projectStore.getProjects({ page: 1, search: value })
 }, 500)
 
@@ -134,5 +136,9 @@ const deleteDialog = (id) => {
     </v-col>
   </v-row>
   <ProjectsDialog v-model:isDialogVisible="isDialogVisible" :projectData="projectData" />
-  <PaginationLinks v-model="currentPage" :totalPage="totalPages" />
+  <PaginationLinks
+    v-model="currentPage"
+    :totalPage="totalPages"
+    v-if="projectStore.projects?.length > 0"
+  />
 </template>
