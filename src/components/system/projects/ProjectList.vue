@@ -11,6 +11,7 @@ const isDialogVisible = ref(false)
 const isConfirmVisible = ref(false)
 const selectedProjectId = ref(null)
 const projectData = ref(null)
+const isLoading = ref(false)
 
 const addProject = () => {
   isDialogVisible.value = true
@@ -23,6 +24,7 @@ const handleUpdate = async (project) => {
 }
 
 const handleDelete = async () => {
+  isLoading.value = true
   if (selectedProjectId.value !== null) await projectStore.deleteProject(selectedProjectId.value)
   isConfirmVisible.value = false
   selectedProjectId.value = null
@@ -76,6 +78,8 @@ onMounted(() => {
       <ConfirmDialog
         title="Delete Project?"
         text="Confirm to delete"
+        :isLoading="isLoading"
+        subject="Deleting Projec"
         @confirm="handleDelete"
         v-model:isConfirmVisible="isConfirmVisible"
       />
