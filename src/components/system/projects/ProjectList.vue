@@ -10,6 +10,17 @@ const projectStore = useProjectStore()
 const isDialogVisible = ref(false)
 const isConfirmVisible = ref(false)
 const selectedProjectId = ref(null)
+const projectData = ref(null)
+
+const addProject = () => {
+  isDialogVisible.value = true
+  projectData.value = null
+}
+
+const handleUpdate = async (project) => {
+  isDialogVisible.value = true
+  projectData.value = project
+}
 
 const handleDelete = async () => {
   if (selectedProjectId.value !== null) await projectStore.deleteProject(selectedProjectId.value)
@@ -39,7 +50,7 @@ onMounted(() => {
         prepend-inner-icon="mdi-magnify"
         density="compact"
       ></v-text-field>
-      <v-btn icon class="mb-5" @click="isDialogVisible = !isDialogVisible">
+      <v-btn icon class="mb-5" @click="addProject">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </v-col>
@@ -57,7 +68,7 @@ onMounted(() => {
           <v-btn icon @click="deleteDialog(project.id)">
             <v-icon>mdi-trash-can-outline</v-icon>
           </v-btn>
-          <v-btn icon>
+          <v-btn icon @click="handleUpdate(project)">
             <v-icon>mdi-pencil-outline</v-icon>
           </v-btn>
         </v-card-actions>
@@ -70,5 +81,5 @@ onMounted(() => {
       />
     </v-col>
   </v-row>
-  <ProjectsDialog v-model:isDialogVisible="isDialogVisible" projectData />
+  <ProjectsDialog v-model:isDialogVisible="isDialogVisible" :projectData="projectData" />
 </template>

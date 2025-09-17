@@ -63,9 +63,8 @@ const handleSubmit = async () => {
     }
 
     isUpdate.value
-      ? await projectStore.updateProject(formData.value.id)
+      ? await projectStore.updateProject(formData.value.id, formData.value)
       : await projectStore.addProjects(formData.value)
-    // Format date to MySQL format (YYYY-MM-DD)
 
     resetForm()
     dialog.value = false //for closing the dialog
@@ -94,7 +93,9 @@ const handleSubmit = async () => {
             variant="underlined"
             v-model="formData.due_date"
           ></v-date-input>
-          <v-btn type="submit" :loading="isLoading" block>submit</v-btn>
+          <v-btn type="submit" :loading="isLoading" block>{{
+            isUpdate ? 'Update' : 'Submit'
+          }}</v-btn>
         </v-form>
       </v-card-text>
       <v-card-actions>
