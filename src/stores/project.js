@@ -5,11 +5,29 @@ import api from '@/services/api'
 export const useProjectStore = defineStore('project', () => {
   const projects = ref(null)
   const projectMembers = ref([])
+  const pagination = ref({
+    current_page: 1,
+    last_page: 1,
+    per_page: 10,
+    total: 0,
+  })
 
-  //Get Projects
-  async function getProjects() {
-    const response = await api.get('/projects')
-    projects.value = response.data
+  //Get Projects with search and pagination
+  async function getProjects(params = {}) {
+    const queryParams = new URLSearchParams({
+      page: params.page || 1,
+      per_page: params.per_page || 10,
+      ...(params.search && { q: params.search }),
+    })
+
+    const response = await api.get(`/projects?${queryParams}`)
+    projects.value = response.data.data // Laravel pagination wraps data
+    pagination.value = {
+      current_page: response.data.current_page,
+      last_page: response.data.last_page,
+      per_page: response.data.per_page,
+      total: response.data.total,
+    }
     return response.data
   }
 

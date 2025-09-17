@@ -1,20 +1,39 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useProjectStore } from '@/stores/project'
+import { debounce } from 'lodash'
 import ProjectsDialog from './ProjectsDialog.vue'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import PaginationLinks from '@/components/common/PaginationLinks.vue'
 
 //Load variables
 const projectStore = useProjectStore()
-
 const isDialogVisible = ref(false)
 const isConfirmVisible = ref(false)
 const selectedProjectId = ref(null)
 const projectData = ref(null)
 const isLoading = ref(false)
+const currentPage = ref(1)
+const totalPages = ref(10)
+const searchQuery = ref('')
 
 onMounted(() => {
   projectStore.getProjects()
+})
+
+// Watch for page changes
+watch(currentPage, (newPage) => {
+  projectStore.getProjects({ page: newPage, search: searchQuery.value })
+})
+
+//Debounced serach functions
+
+const debouncedSearch = debounce((value) => {
+  projectStore.getProjects({ page: 1, search: value })
+}, 500)
+
+watch(searchQuery, (newSearch) => {
+  debouncedSearch(newSearch)
 })
 
 const addProject = () => {
@@ -51,10 +70,12 @@ const deleteDialog = (id) => {
     <v-spacer></v-spacer>
     <v-col cols="12" md="4" class="d-flex ga-2">
       <v-text-field
+        v-model="searchQuery"
         label="Search"
         variant="outlined"
         prepend-inner-icon="mdi-magnify"
         density="compact"
+        clearable
       ></v-text-field>
       <v-btn icon class="mb-5" @click="addProject">
         <v-icon>mdi-plus</v-icon>
@@ -113,4 +134,5 @@ const deleteDialog = (id) => {
     </v-col>
   </v-row>
   <ProjectsDialog v-model:isDialogVisible="isDialogVisible" :projectData="projectData" />
+  <PaginationLinks v-model="currentPage" :totalPage="totalPages" />
 </template>
