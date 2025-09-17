@@ -60,7 +60,7 @@ const deleteDialog = (id) => {
   </v-row>
   <v-row>
     <v-col cols="12" v-for="project in projectStore.projects" :key="project.id">
-      <v-card>
+      <v-card v-if="projectStore.projects.length > 0">
         <v-card-title>{{ project.name }}</v-card-title>
         <v-card-text>
           <h3>{{ project.user.first_name }}</h3>
@@ -84,6 +84,15 @@ const deleteDialog = (id) => {
         @confirm="handleDelete"
         v-model:isConfirmVisible="isConfirmVisible"
       />
+    </v-col>
+    <v-col cols="12" class="text-center" v-if="projectStore.projects == null">
+      <v-progress-circular
+        color="primary"
+        indeterminate
+        width="15"
+        size="100"
+      ></v-progress-circular>
+      <p>Loading Projects</p>
     </v-col>
   </v-row>
   <ProjectsDialog v-model:isDialogVisible="isDialogVisible" :projectData="projectData" />
