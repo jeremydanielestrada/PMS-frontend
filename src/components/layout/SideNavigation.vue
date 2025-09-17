@@ -17,7 +17,7 @@ const isAdmin = computed(() => authStore.isAdmin)
 const admins = [
   ['Projects', 'mdi-package-variant', '/projects'],
   ['Dashboard', 'mdi-view-dashboard-outline', '/dashboard'],
-  ['Users', 'mdi-account-multiple-outline', '/users'],
+  ['Manage Users', 'mdi-account-multiple-outline', '/manage-users'],
 ]
 </script>
 
