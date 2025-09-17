@@ -24,7 +24,7 @@ const admins = [
 <template>
   <v-navigation-drawer v-model="drawer">
     <v-list>
-      <v-list-group value="Admin" v-if="isAdmin">
+      <v-list-group value="Admin" v-if="isAdmin" base-color="primary" class="border-b-thin">
         <template v-slot:activator="{ props }">
           <v-list-item v-bind="props" title="Admin"></v-list-item>
         </template>

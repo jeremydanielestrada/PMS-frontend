@@ -15,23 +15,16 @@ export const useProjectStore = defineStore('project', () => {
 
   //Add Projects
   async function addProjects(formData) {
-    try {
-      const response = await api.post('/projects', formData)
-      if (response) getProjects()
-    } catch (error) {
-      console.log(error.response?.data?.message)
-    }
+    const response = await api.post('/projects', formData)
+    if (response.data) getProjects()
+    return response.data
   }
 
   //Update Projects
   async function updateProject(id, formData) {
-    try {
-      const response = await api.put(`projects/${id}`, formData)
-      if (response) getProjects()
-      console.log(response)
-    } catch (error) {
-      console.log(error.response?.data?.message)
-    }
+    const response = await api.put(`/projects/${id}`, formData)
+    if (response.data) getProjects()
+    return response.data
   }
 
   async function deleteProject(id) {

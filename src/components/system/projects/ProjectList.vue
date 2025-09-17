@@ -29,9 +29,12 @@ const handleUpdate = async (project) => {
 
 const handleDelete = async () => {
   isLoading.value = true
-  if (selectedProjectId.value !== null) await projectStore.deleteProject(selectedProjectId.value)
-  isConfirmVisible.value = false
-  selectedProjectId.value = null
+  if (selectedProjectId.value !== null) {
+    await projectStore.deleteProject(selectedProjectId.value)
+    isConfirmVisible.value = false
+    selectedProjectId.value = null
+    isLoading.value = false
+  }
 }
 
 const deleteDialog = (id) => {
@@ -59,23 +62,34 @@ const deleteDialog = (id) => {
     </v-col>
   </v-row>
   <v-row>
-    <v-col cols="12" v-for="project in projectStore.projects" :key="project.id">
-      <v-card v-if="projectStore.projects.length > 0">
-        <v-card-title>{{ project.name }}</v-card-title>
-        <v-card-text>
-          <h3>{{ project.user.first_name }}</h3>
-          <p>{{ project.description }}</p>
-          <small>{{ project.due_date }}</small>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn icon @click="deleteDialog(project.id)">
-            <v-icon>mdi-trash-can-outline</v-icon>
-          </v-btn>
-          <v-btn icon @click="handleUpdate(project)">
-            <v-icon>mdi-pencil-outline</v-icon>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+    <v-col cols="12" v-if="projectStore.projects?.length > 0">
+      <v-table>
+        <thead>
+          <tr class="bg-blue-darken-2">
+            <th class="text-left">Project Name</th>
+            <th class="text-left">Owner</th>
+            <th class="text-left">Due Date</th>
+            <th class="text-left">View</th>
+            <th class="text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr cols="12" v-for="project in projectStore.projects" :key="project.id">
+            <td>{{ project.name }}</td>
+            <td>{{ project.user.first_name + ' ' + project.user.last_name }}</td>
+            <td>{{ project.due_date }}</td>
+            <td>link</td>
+            <td>
+              <v-btn icon size="30" class="mx-2" @click="deleteDialog(project.id)">
+                <v-icon>mdi-trash-can-outline</v-icon>
+              </v-btn>
+              <v-btn icon size="30" @click="handleUpdate(project)">
+                <v-icon>mdi-pencil-outline</v-icon>
+              </v-btn>
+            </td>
+          </tr>
+        </tbody>
+      </v-table>
       <ConfirmDialog
         title="Delete Project?"
         text="Confirm to delete"
@@ -85,7 +99,7 @@ const deleteDialog = (id) => {
         v-model:isConfirmVisible="isConfirmVisible"
       />
     </v-col>
-    <v-col cols="12" class="text-center" v-if="projectStore.projects == null">
+    <v-col cols="12" class="text-center" v-else>
       <v-progress-circular
         color="primary"
         indeterminate
