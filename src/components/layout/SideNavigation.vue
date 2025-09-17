@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 
 //Load props and emitters
 const props = defineProps(['isDrawerVisible'])
@@ -9,6 +10,9 @@ const drawer = computed({
   get: () => props.isDrawerVisible,
   set: (value) => emit('update:isDrawerVisible', value),
 })
+const authStore = useAuthStore()
+
+const isAdmin = computed(() => authStore.isAdmin)
 
 const admins = [
   ['Projects', 'mdi-package-variant', '/projects'],
@@ -20,7 +24,7 @@ const admins = [
 <template>
   <v-navigation-drawer v-model="drawer">
     <v-list>
-      <v-list-group value="Admin">
+      <v-list-group value="Admin" v-if="isAdmin">
         <template v-slot:activator="{ props }">
           <v-list-item v-bind="props" title="Admin"></v-list-item>
         </template>

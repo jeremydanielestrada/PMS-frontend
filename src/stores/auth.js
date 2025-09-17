@@ -8,8 +8,15 @@ export const useAuthStore = defineStore('auth', () => {
   const userData = ref(null)
   const allUsers = ref(null)
 
+  // Initialize user data from localStorage
+  const storedUser = localStorage.getItem('user')
+  if (storedUser) {
+    userData.value = JSON.parse(storedUser)
+  }
+
   //getters
   const isAuthenticated = computed(() => !!token.value)
+  const isAdmin = computed(() => userData.value?.role === 'admin')
 
   //Get all users
   async function getAllUsers() {
@@ -70,10 +77,12 @@ export const useAuthStore = defineStore('auth', () => {
 
     //Getters,
     isAuthenticated,
+    isAdmin,
 
     //States
     token,
     userData,
     allUsers,
+    storedUser,
   }
 })
