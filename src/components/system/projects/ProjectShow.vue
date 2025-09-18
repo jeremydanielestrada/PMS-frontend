@@ -6,19 +6,27 @@ import { useRoute } from 'vue-router'
 //Load Variables
 const projectStore = useProjectStore()
 const route = useRoute()
+const isLoading = ref(true)
+
+const project = computed(() => projectStore.getProject || {})
 
 onMounted(() => {
   projectStore.getSingleProject(route.params.id)
+  isLoading.value = false
 })
 </script>
 
 <template>
-  <v-card :title="projectStore.getProject?.name">
+  <div class="d-flex flex-column align-center" v-if="isLoading">
+    <v-progress-circular color="primary" indeterminate width="15" size="100"></v-progress-circular>
+    <span>Loading project</span>
+  </div>
+  <v-card :title="project.name" v-else>
     <v-card-text>
       <p>
-        <strong>{{ projectStore.getProject?.description }}</strong>
+        <strong>{{ project.description }}</strong>
       </p>
-      <small>{{ projectStore.getProject?.due_date }}</small>
+      <small>{{ project.due_date }}</small>
     </v-card-text>
   </v-card>
 </template>

@@ -7,7 +7,7 @@ import ProjectShow from '@/components/system/projects/ProjectShow.vue'
   <AppLayout>
     <template #content>
       <v-row>
-        <v-col cols="12" sm="6" md="8">
+        <v-col cols="12" sm="6" md="8" class="mx-auto">
           <ProjectShow />
         </v-col>
       </v-row>
