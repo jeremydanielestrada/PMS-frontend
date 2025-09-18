@@ -1,3 +1,11 @@
+<script setup>
+import AppLayout from '@/components/layout/AppLayout.vue'
+</script>
+
 <template>
-  <h1>Users View</h1>
+  <AppLayout>
+    <template #content>
+      <h1>Hello world</h1>
+    </template>
+  </AppLayout>
 </template>

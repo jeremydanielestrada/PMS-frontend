@@ -62,6 +62,11 @@ const deleteDialog = (id) => {
   isConfirmVisible.value = true
   selectedProjectId.value = id
 }
+
+// const showProject = async () => {
+//   await projectStore.getSingleProject(selectedProjectId)
+//   router.push({ name: 'projects-show', params: { id: selectedProjectId.value } })
+// }
 </script>
 
 <template>
@@ -101,7 +106,9 @@ const deleteDialog = (id) => {
             <td>{{ project.name }}</td>
             <td>{{ project.user.first_name + ' ' + project.user.last_name }}</td>
             <td>{{ project.due_date }}</td>
-            <td>link</td>
+            <td>
+              <v-btn icon size="30" :to="`/projects/${project.id}`"><v-icon>mdi-eye</v-icon></v-btn>
+            </td>
             <td>
               <v-btn icon size="30" class="mx-2" @click="deleteDialog(project.id)">
                 <v-icon>mdi-trash-can-outline</v-icon>

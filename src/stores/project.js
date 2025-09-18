@@ -5,6 +5,7 @@ import api from '@/services/api'
 export const useProjectStore = defineStore('project', () => {
   const projects = ref(null)
   const projectMembers = ref([])
+  const getProject = ref(null)
   const pagination = ref({
     current_page: 1,
     last_page: 1,
@@ -29,6 +30,17 @@ export const useProjectStore = defineStore('project', () => {
       total: response.data.total,
     }
     return response.data
+  }
+
+  //Get a single project
+
+  async function getSingleProject(id) {
+    try {
+      const response = await api.get(`/projects/${id}`)
+      getProject.value = response.data
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   //Add Projects
@@ -81,6 +93,7 @@ export const useProjectStore = defineStore('project', () => {
     projects,
     projectMembers,
     pagination,
+    getProject,
 
     //Actions
     getProjects,
@@ -90,5 +103,6 @@ export const useProjectStore = defineStore('project', () => {
     updateProject,
     deleteProject,
     deleteProjectMembers,
+    getSingleProject,
   }
 })
