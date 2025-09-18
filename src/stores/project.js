@@ -66,18 +66,14 @@ export const useProjectStore = defineStore('project', () => {
     }
   }
 
-  async function getProjectMembers() {
-    const response = api.get('/project-members')
-
-    if (response) projectMembers.value = response.data
-
+  async function getProjectMembersByProject(projectId) {
+    const response = api.get(`/project-members?project_id=${projectId}`)
     return response.data
   }
 
   async function addProjectMembers(formData) {
     try {
       const response = api.post('/project-members', formData)
-      if (response.data) getProjectMembers()
     } catch (error) {
       console.log(error, 'Error adding members')
     }
@@ -85,7 +81,6 @@ export const useProjectStore = defineStore('project', () => {
 
   async function deleteProjectMembers(id) {
     const response = api.post(`/project-members${id}`)
-    if (response) getProjectMembers()
   }
 
   return {
@@ -97,7 +92,7 @@ export const useProjectStore = defineStore('project', () => {
 
     //Actions
     getProjects,
-    getProjectMembers,
+    getProjectMembersByProject,
     addProjects,
     addProjectMembers,
     updateProject,
