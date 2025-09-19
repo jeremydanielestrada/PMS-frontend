@@ -2,12 +2,18 @@
 import { ref, onMounted, computed } from 'vue'
 import { useProjectStore } from '@/stores/project'
 import { useRoute } from 'vue-router'
+import ProjectsDialog from './ProjectsDialog.vue'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 
 //Load Variables
 const projectStore = useProjectStore()
 const route = useRoute()
 const isLoading = ref(true)
 const projectMembers = ref([])
+const isDialogVisible = ref(false)
+const isConfirmVisible = ref(false)
+const selectedProjectId = ref(null)
+const projectData = ref(null)
 
 const project = computed(() => projectStore.getProject || {})
 
@@ -16,6 +22,26 @@ onMounted(async () => {
   projectMembers.value = await projectStore.getProjectMembersByProject(route.params.id)
   isLoading.value = false
 })
+
+const handleUpdate = async (project) => {
+  isDialogVisible.value = true
+  projectData.value = project
+}
+
+const handleDelete = async () => {
+  isLoading.value = true
+  if (selectedProjectId.value !== null) {
+    await projectStore.deleteProject(selectedProjectId.value)
+    isConfirmVisible.value = false
+    selectedProjectId.value = null
+    isLoading.value = false
+  }
+}
+
+const deleteDialog = (id) => {
+  isConfirmVisible.value = true
+  selectedProjectId.value = id
+}
 </script>
 
 <template>
@@ -101,5 +127,14 @@ onMounted(async () => {
         </v-row>
       </v-card-text>
     </v-card>
+    <ConfirmDialog
+      title="Delete Project?"
+      text="Confirm to delete"
+      :isLoading="isLoading"
+      subject="Deleting Projec"
+      @confirm="handleDelete"
+      v-model:isConfirmVisible="isConfirmVisible"
+    />
   </div>
+  <ProjectsDialog v-model:isDialogVisible="isDialogVisible" :projectData="projectData" />
 </template>
