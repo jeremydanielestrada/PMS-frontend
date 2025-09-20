@@ -33,7 +33,6 @@ export const useProjectStore = defineStore('project', () => {
   }
 
   //Get a single project
-
   async function getSingleProject(id) {
     try {
       const response = await api.get(`/projects/${id}`)
@@ -74,18 +73,23 @@ export const useProjectStore = defineStore('project', () => {
   async function addProjectMembers(formData) {
     const response = await api.post('/project-members', formData)
 
-    if (response) {
-      projectMembers.value = response.data
-      await getProjectMembersByProject(formData.id)
-    } else {
-      console.log(response.error?.message, 'Error adding members')
+    // If we have the current project loaded, refresh it
+    if (getProject.value && getProject.value.id == formData.project_id) {
+      await getSingleProject(formData.project_id)
     }
+
+    return response.data
   }
 
   async function deleteProjectMembers(id) {
     const response = api.delete(`/project-members/${id}`)
 
-    if (!response) throw new Error('Error deleting')
+    // Refresh the current project if it's loaded
+    if (getProject.value) {
+      await getSingleProject(getProject.value.id)
+    }
+
+    return response.data
   }
 
   return {

@@ -9,7 +9,7 @@ const authStore = useAuthStore()
 const isLoading = ref(false)
 
 const props = defineProps(['isDialogVisible', 'projectId'])
-const emit = defineEmits(['update:isDialogVisible'])
+const emit = defineEmits(['update:isDialogVisible', 'memberAdded'])
 
 //get all users
 onMounted(async () => {
@@ -21,14 +21,23 @@ const modal = computed({
   set: (newVal) => emit('update:isDialogVisible', newVal),
 })
 
-const memberOptions = computed(() =>
-  authStore.allUsers.map((user) => {
-    return {
-      title: user.first_name + '' + user.last_name,
-      value: user.id,
-    }
-  }),
-)
+// Filter out users who are already project members
+const memberOptions = computed(() => {
+  if (!authStore.allUsers || !projectStore.getProject?.project_members) {
+    return []
+  }
+
+  // Get IDs of current project members
+  const existingMemberIds = projectStore.getProject.project_members.map((member) => member.user_id)
+
+  // Filter out existing members
+  const availableUsers = authStore.allUsers.filter((user) => !existingMemberIds.includes(user.id))
+
+  return availableUsers.map((user) => ({
+    title: user.first_name + ' ' + user.last_name,
+    value: user.id,
+  }))
+})
 
 const formDataDefault = {
   project_id: null,
@@ -47,6 +56,7 @@ const addMember = async () => {
     await projectStore.addProjectMembers(formData.value)
     formData.value = { ...formDataDefault }
     modal.value = false // Close dialog on success
+    emit('memberAdded')
   } catch (error) {
     console.error('Error adding member:', error)
   } finally {

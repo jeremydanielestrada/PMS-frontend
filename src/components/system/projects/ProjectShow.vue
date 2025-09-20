@@ -20,6 +20,10 @@ const showMembersDialog = ref(false)
 
 const project = computed(() => projectStore.getProject || {})
 
+const refreshProjectData = async () => {
+  await projectStore.getSingleProject(route.params.id)
+}
+
 // Check if current user is admin or project leader
 const canManageMembers = computed(() => {
   if (authStore.isAdmin) return true
@@ -148,7 +152,7 @@ const deleteMember = async (id) => {
                     color="red"
                     class="ml-3"
                     @click="deleteMember(member.id)"
-                    v-if="member.role == 'member' || canManageMembers"
+                    v-if="member.role === 'member' && canManageMembers"
                     ><v-icon>mdi-trash-can-outline</v-icon></v-btn
                   >
                 </v-chip>
@@ -168,5 +172,9 @@ const deleteMember = async (id) => {
     />
   </div>
   <ProjectsDialog v-model:isDialogVisible="isDialogVisible" :projectData="projectData" />
-  <ProjectMembersDialog v-model:isDialogVisible="showMembersDialog" :projectId="route.params.id" />
+  <ProjectMembersDialog
+    v-model:isDialogVisible="showMembersDialog"
+    :projectId="route.params.id"
+    @memberAdded="refreshProjectData"
+  />
 </template>
