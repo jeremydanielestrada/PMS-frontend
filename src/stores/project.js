@@ -72,16 +72,18 @@ export const useProjectStore = defineStore('project', () => {
   }
 
   async function addProjectMembers(formData) {
-    try {
-      const response = api.post('/project-members', formData)
-      if (response.ok) projectMembers.value = response.data
-    } catch (error) {
-      console.log(error, 'Error adding members')
+    const response = await api.post('/project-members', formData)
+
+    if (response) {
+      projectMembers.value = response.data
+      await getProjectMembersByProject(formData.id)
+    } else {
+      console.log(response.error?.message, 'Error adding members')
     }
   }
 
   async function deleteProjectMembers(id) {
-    const response = api.post(`/project-members${id}`)
+    const response = api.delete(`/project-members/${id}`)
 
     if (!response) throw new Error('Error deleting')
   }

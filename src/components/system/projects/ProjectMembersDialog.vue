@@ -43,9 +43,7 @@ const formData = ref({
 const addMember = async () => {
   isLoading.value = true
   try {
-    // Set project_id from props
     formData.value.project_id = props.projectId
-
     await projectStore.addProjectMembers(formData.value)
     formData.value = { ...formDataDefault }
     modal.value = false // Close dialog on success

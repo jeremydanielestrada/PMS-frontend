@@ -1,21 +1,36 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useProjectStore } from '@/stores/project'
+import { useAuthStore } from '@/stores/auth'
 import { useRoute } from 'vue-router'
 import ProjectsDialog from './ProjectsDialog.vue'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import ProjectMembersDialog from './ProjectMembersDialog.vue'
 
 //Load Variables
 const projectStore = useProjectStore()
+const authStore = useAuthStore()
 const route = useRoute()
 const isLoading = ref(true)
 const projectMembers = ref([])
 const isDialogVisible = ref(false)
 const isConfirmVisible = ref(false)
-const selectedProjectId = ref(null)
 const projectData = ref(null)
+const showMembersDialog = ref(false)
 
 const project = computed(() => projectStore.getProject || {})
+
+// Check if current user is admin or project leader
+const canManageMembers = computed(() => {
+  if (authStore.isAdmin) return true
+
+  const currentUser = authStore.userData
+  if (!currentUser || !project.value.project_members) return false
+
+  return project.value.project_members.some(
+    (member) => member.user_id === currentUser.id && member.role === 'leader',
+  )
+})
 
 onMounted(async () => {
   await projectStore.getSingleProject(route.params.id)
@@ -30,17 +45,23 @@ const handleUpdate = async (project) => {
 
 const handleDelete = async () => {
   isLoading.value = true
-  if (selectedProjectId.value !== null) {
-    await projectStore.deleteProject(selectedProjectId.value)
-    isConfirmVisible.value = false
-    selectedProjectId.value = null
+  if (project.value.id !== null) {
+    await projectStore.deleteProject(project.value.id)
     isLoading.value = false
   }
 }
 
 const deleteDialog = (id) => {
   isConfirmVisible.value = true
-  selectedProjectId.value = id
+  project.value.id = id
+}
+
+const deleteMember = async (id) => {
+  try {
+    await projectStore.deleteProjectMembers(id)
+  } catch (error) {
+    console.log(error, 'Error deleting member')
+  }
 }
 </script>
 
@@ -59,7 +80,7 @@ const deleteDialog = (id) => {
         </v-col>
         <v-col cols="12" sm="3" md="3" class="d-flex justify-space-between align-center pb-4">
           <div class="d-flex ga-2">
-            <v-btn icon variant="outlined">
+            <v-btn icon variant="outlined" @click="showMembersDialog = true">
               <v-icon>mdi-account-multiple-plus-outline</v-icon>
               <v-tooltip activator="parent" location="bottom">Add Members</v-tooltip>
             </v-btn>
@@ -94,7 +115,7 @@ const deleteDialog = (id) => {
                   {{ project.user.first_name + ' ' + project.user.last_name }}
                 </p>
               </v-col>
-              <v-col cols="6">
+              <v-col cols="12">
                 <div class="text-subtitle-1 font-weight-bold">Due Date</div>
                 <p class="text-body-1">{{ new Date(project.due_date).toLocaleDateString() }}</p>
               </v-col>
@@ -120,6 +141,16 @@ const deleteDialog = (id) => {
                   </template>
                   {{ member.user.first_name + ' ' + member.user.last_name }}
                   <span class="text-caption ms-2">({{ member.role }})</span>
+                  <v-btn
+                    icon
+                    size="20"
+                    variant="outlined"
+                    color="red"
+                    class="ml-3"
+                    @click="deleteMember(member.id)"
+                    v-if="member.role == 'member' || canManageMembers"
+                    ><v-icon>mdi-trash-can-outline</v-icon></v-btn
+                  >
                 </v-chip>
               </div>
             </v-card>
@@ -131,10 +162,11 @@ const deleteDialog = (id) => {
       title="Delete Project?"
       text="Confirm to delete"
       :isLoading="isLoading"
-      subject="Deleting Projec"
+      subject="Deleting Project"
       @confirm="handleDelete"
       v-model:isConfirmVisible="isConfirmVisible"
     />
   </div>
   <ProjectsDialog v-model:isDialogVisible="isDialogVisible" :projectData="projectData" />
+  <ProjectMembersDialog v-model:isDialogVisible="showMembersDialog" :projectId="route.params.id" />
 </template>

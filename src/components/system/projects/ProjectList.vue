@@ -62,11 +62,6 @@ const deleteDialog = (id) => {
   isConfirmVisible.value = true
   selectedProjectId.value = id
 }
-
-// const showProject = async () => {
-//   await projectStore.getSingleProject(selectedProjectId)
-//   router.push({ name: 'projects-show', params: { id: selectedProjectId.value } })
-// }
 </script>
 
 <template>
