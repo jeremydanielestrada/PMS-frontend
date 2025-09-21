@@ -15,7 +15,6 @@ const currentProject = ref(null)
 const isLoading = ref(true)
 
 onMounted(async () => {
-  console.log('TaskView mounted')
 
   // Load projects first
   await projectStore.getProjects()

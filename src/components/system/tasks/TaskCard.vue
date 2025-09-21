@@ -8,11 +8,7 @@ defineEmits(['edit', 'delete'])
 const authStore = useAuthStore()
 
 const canManageTask = computed(() => {
-  return (
-    authStore.isAdmin ||
-    props.task.created_by === authStore.userData?.id ||
-    props.task.assigned_to === authStore.userData?.id
-  )
+  return authStore.isAdmin || props.task.assigned_to === authStore.userData?.id
 })
 
 const canDeleteTask = computed(() => {
