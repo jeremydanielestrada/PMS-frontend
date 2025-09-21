@@ -37,6 +37,7 @@ export const useProjectStore = defineStore('project', () => {
     try {
       const response = await api.get(`/projects/${id}`)
       getProject.value = response.data
+      return response.data
     } catch (error) {
       console.log(error)
     }

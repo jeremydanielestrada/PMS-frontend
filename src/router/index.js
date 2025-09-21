@@ -50,6 +50,12 @@ const router = createRouter({
       name: 'tasks',
       component: TaskView,
     },
+
+    {
+      path: '/projects/:projectId/tasks',
+      name: 'project-tasks',
+      component: TaskView,
+    },
   ],
 })
 

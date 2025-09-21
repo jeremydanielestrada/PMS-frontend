@@ -76,10 +76,18 @@ const isProjectLeader = computed(() => {
 const handleSubmit = async () => {
   isLoading.value = true
   try {
+    // Format the data before sending
+    const submitData = { ...formData.value }
+
+    // Format date to MySQL format (YYYY-MM-DD)
+    if (submitData.due_date) {
+      submitData.due_date = new Date(submitData.due_date).toISOString().split('T')[0]
+    }
+
     if (isUpdate.value) {
-      await taskStore.updateTask(props.task.id, formData.value)
+      await taskStore.updateTask(props.task.id, submitData)
     } else {
-      await taskStore.createTask(formData.value)
+      await taskStore.createTask(submitData)
     }
 
     formData.value = { ...formDataDefault }
