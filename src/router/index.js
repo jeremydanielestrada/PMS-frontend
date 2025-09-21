@@ -5,6 +5,7 @@ import ProjectsView from '@/views/system/admin/ProjectsView.vue'
 import DashboardView from '@/views/system/admin/DashboardView.vue'
 import ManageUsersView from '@/views/system/admin/ManageUsersView.vue'
 import ProjectShowView from '@/views/system/ProjectShowView.vue'
+import TaskView from '@/views/system/TaskView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,6 +43,12 @@ const router = createRouter({
       path: '/manage-users',
       name: 'manage-users',
       component: ManageUsersView,
+    },
+
+    {
+      path: '/tasks',
+      name: 'tasks',
+      component: TaskView,
     },
   ],
 })
