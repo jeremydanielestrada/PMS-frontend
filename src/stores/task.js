@@ -7,6 +7,14 @@ export const useTaskStore = defineStore('task', () => {
   const tasks = ref([])
   const currentTask = ref(null)
 
+  //Get all tasks
+
+  async function fetchTasks() {
+    const response = await api.get('/tasks')
+    if (response) tasks.value = response.data
+    return response.data
+  }
+
   // Get tasks by project
   async function getTasksByProject(projectId) {
     const response = await api.get(`/tasks?project_id=${projectId}`)
@@ -65,5 +73,6 @@ export const useTaskStore = defineStore('task', () => {
     updateTask,
     updateTaskStatus,
     deleteTask,
+    fetchTasks,
   }
 })
