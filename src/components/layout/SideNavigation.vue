@@ -21,7 +21,10 @@ const admin = [
   ['Manage Users', 'mdi-account-multiple-outline', '/manage-users'],
 ]
 
-const users = [['Tasks', 'mdi-clipboard-list-outline', '/tasks']]
+const users = [
+  ['Tasks', 'mdi-clipboard-list-outline', '/tasks'],
+  ['Calendar', 'mdi-calendar-month', '/calendar'],
+]
 </script>
 
 <template>

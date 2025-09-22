@@ -23,10 +23,27 @@ const priorityColor = computed(() => {
   }
   return colors[props.task.priority] || 'grey'
 })
+
+const subtaskProgress = computed(() => {
+  if (!props.task.subtasks || props.task.subtasks.length === 0) return 0
+  const completed = props.task.subtasks.filter((s) => s.is_completed).length
+  return Math.round((completed / props.task.subtasks.length) * 100)
+})
+
+const completedSubtasks = computed(() => {
+  return props.task.subtasks?.filter((s) => s.is_completed).length || 0
+})
 </script>
 
 <template>
   <v-card class="task-card" elevation="2">
+    <div class="mt-2" v-if="task.subtasks && task.subtasks.length > 0">
+      <v-progress-linear :model-value="subtaskProgress" color="success" height="4" />
+      <div class="text-caption text-grey mt-1">
+        {{ completedSubtasks }}/{{ task.subtasks.length }} subtasks completed
+      </div>
+    </div>
+
     <v-card-text>
       <div class="d-flex justify-space-between align-start mb-2">
         <h4 class="task-title">{{ task.title }}</h4>

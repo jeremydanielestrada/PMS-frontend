@@ -6,6 +6,7 @@ import DashboardView from '@/views/system/admin/DashboardView.vue'
 import ManageUsersView from '@/views/system/admin/ManageUsersView.vue'
 import ProjectShowView from '@/views/system/ProjectShowView.vue'
 import TaskView from '@/views/system/TaskView.vue'
+import CalendarView from '@/views/system/CalendarView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -55,6 +56,12 @@ const router = createRouter({
       path: '/projects/:projectId/tasks',
       name: 'project-tasks',
       component: TaskView,
+    },
+
+    {
+      path: '/calendar',
+      name: 'calendar',
+      component: CalendarView,
     },
   ],
 })
