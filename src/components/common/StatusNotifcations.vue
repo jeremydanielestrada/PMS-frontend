@@ -1,14 +1,21 @@
 <script setup>
 import { computed, onMounted } from 'vue'
 import { useRealtimeStore } from '@/stores/realtime'
+import { useAuthStore } from '@/stores/auth'
 
 const realtimeStore = useRealtimeStore()
+const authStore = useAuthStore()
 
-const unreadCount = computed(() => realtimeStore.notifications?.filter((n) => !n.is_read).length)
+const unreadCount = computed(
+  () => (realtimeStore.notifications || []).filter((n) => !n.is_read).length,
+)
 
-onMounted(() => {
-  realtimeStore.listenToNotifications()
-  realtimeStore.fetchNotifications()
+onMounted(async () => {
+  console.log('Token:', localStorage.getItem('token'))
+  console.log('Auth user:', authStore.userData)
+
+  await realtimeStore.fetchNotifications()
+  console.log('Final notifications:', realtimeStore.notifications)
 })
 </script>
 
@@ -22,7 +29,7 @@ onMounted(() => {
     </template>
     <v-list max-width="300">
       <v-list-item
-        v-for="notification in realtimeStore.notifications?.slice(0, 5)"
+        v-for="notification in (realtimeStore.notifications || []).slice(0, 5)"
         :key="notification.id"
         @click="realtimeStore.markAsRead(notification.id)"
         :class="{ 'bg-grey-lighten-4': !notification.is_read }"
@@ -30,8 +37,11 @@ onMounted(() => {
         <v-list-item-title class="text-wrap">
           {{ notification.type }}
         </v-list-item-title>
+        <v-list-item-subtitle>
+          {{ new Date(notification.created_at).toLocaleString() }}
+        </v-list-item-subtitle>
       </v-list-item>
-      <v-list-item v-if="realtimeStore.notifications?.length === 0">
+      <v-list-item v-if="!realtimeStore.notifications || realtimeStore.notifications.length === 0">
         <v-list-item-title class="text-center text-grey"> No notifications </v-list-item-title>
       </v-list-item>
     </v-list>

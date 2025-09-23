@@ -30,11 +30,18 @@ const canDragTasks = computed(() => {
 })
 
 const isProjectMember = computed(() => {
-  // Check if user is member of current project
-  return authStore.userData?.projectMembers?.some((member) => member.project_id === props.projectId)
-})
+  if (!authStore.authorizedUser?.project_members) {
+    return false
+  }
 
-onMounted(() => {
+  const isMember = authStore.authorizedUser.project_members.some((member) => {
+    return member.project_id == props.projectId
+  })
+
+  return isMember
+})
+onMounted(async () => {
+  await authStore.getAuthorizedUser()
   if (props.projectId) {
     taskStore.getTasksByProject(props.projectId)
   }

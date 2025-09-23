@@ -7,6 +7,7 @@ export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('token'))
   const userData = ref(null)
   const allUsers = ref(null)
+  const authorizedUser = ref(null)
 
   // Initialize user data from localStorage
   const storedUser = localStorage.getItem('user')
@@ -17,6 +18,16 @@ export const useAuthStore = defineStore('auth', () => {
   //getters
   const isAuthenticated = computed(() => !!token.value)
   const isAdmin = computed(() => userData.value?.role === 'admin')
+
+  //Get authorized user
+  async function getAuthorizedUser() {
+    const response = await api.get('/user')
+    console.log('Auth user response:', response.data)
+    if (response) {
+      authorizedUser.value = response.data // Direct assignment, not nested
+    }
+    return response.data
+  }
 
   //Get all users
   async function getAllUsers() {
@@ -74,6 +85,7 @@ export const useAuthStore = defineStore('auth', () => {
     logoutUser,
     registerUser,
     getAllUsers,
+    getAuthorizedUser,
 
     //Getters,
     isAuthenticated,
@@ -84,5 +96,6 @@ export const useAuthStore = defineStore('auth', () => {
     userData,
     allUsers,
     storedUser,
+    authorizedUser,
   }
 })
