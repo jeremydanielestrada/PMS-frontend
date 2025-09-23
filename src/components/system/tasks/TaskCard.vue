@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 
 const props = defineProps(['task'])
@@ -12,7 +12,16 @@ const canManageTask = computed(() => {
 })
 
 const canDeleteTask = computed(() => {
-  return authStore.isAdmin || props.task.created_by === authStore.userData?.id
+  return (
+    authStore.isAdmin ||
+    authStore.authorizedUser?.project_members?.some(
+      (member) => member.project_id === props.task.project_id && member.role === 'leader',
+    )
+  )
+})
+
+onMounted(() => {
+  authStore.getAuthorizedUser()
 })
 
 const priorityColor = computed(() => {
