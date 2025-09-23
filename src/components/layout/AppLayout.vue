@@ -3,6 +3,7 @@ import { ref, onMounted, watch } from 'vue'
 import SideNavigation from './SideNavigation.vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import StatusNotifcations from '../common/StatusNotifcations.vue'
 
 //Load Variables
 const isUserLogged = ref(false)
@@ -74,6 +75,8 @@ const signOut = async () => {
           sign out
           <v-icon>mdi-logout </v-icon>
         </v-btn>
+
+        <StatusNotifcations></StatusNotifcations>
 
         <v-btn
           :prepend-icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"

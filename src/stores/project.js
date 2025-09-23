@@ -67,7 +67,7 @@ export const useProjectStore = defineStore('project', () => {
   }
 
   async function getProjectMembersByProject(projectId) {
-    const response = api.get(`/project-members?project_id=${projectId}`)
+    const response = await api.get(`/project-members?project_id=${projectId}`)
     return response.data
   }
 

@@ -2,13 +2,26 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '@/services/api'
+import { useRealtimeStore } from './realtime'
 
 export const useTaskStore = defineStore('task', () => {
   const tasks = ref([])
   const currentTask = ref(null)
+  const realtimeStore = useRealtimeStore()
+
+  //Realtime updates
+  const updateTaskRealtime = (updatedTask) => {
+    const index = tasks.value.findIndex((t) => t.id === updatedTask.id)
+    if (index !== -1) {
+      tasks.value[index] = updatedTask
+    }
+  }
+
+  const initRealtime = (projectId) => {
+    realtimeStore.listenToProject(projectId)
+  }
 
   //Get all tasks
-
   async function fetchTasks() {
     const response = await api.get('/tasks')
     if (response) tasks.value = response.data
@@ -74,5 +87,7 @@ export const useTaskStore = defineStore('task', () => {
     updateTaskStatus,
     deleteTask,
     fetchTasks,
+    updateTaskRealtime,
+    initRealtime,
   }
 })
