@@ -23,6 +23,13 @@ const isProjectLeader = computed(() => {
   )
 })
 
+// Add completion percentage computed
+const completionPercentage = computed(() => {
+  if (!subtaskStore.subtasks?.length) return 0
+  const completed = subtaskStore.subtasks.filter((s) => s.is_completed).length
+  return Math.round((completed / subtaskStore.subtasks.length) * 100)
+})
+
 onMounted(async () => {
   if (props.taskId) {
     await subtaskStore.getSubTasksByTask(props.taskId)
@@ -32,6 +39,22 @@ onMounted(async () => {
 const editSubtask = (subtask) => {
   showEditDialog.value = true
   subtaskData.value = subtask
+}
+
+// Add missing delete function
+const deleteSubtask = async (subtaskId) => {
+  if (confirm('Delete this subtask?')) {
+    await subtaskStore.deleteSubTask(subtaskId)
+    // Refresh the list
+    await subtaskStore.getSubTasksByTask(props.taskId || props.task.id)
+  }
+}
+
+// Fix toggle function
+const toggleSubtask = async (subtaskId) => {
+  await subtaskStore.toggleSubTaskComplete(subtaskId)
+  // Refresh the list
+  await subtaskStore.getSubTasksByTask(props.taskId || props.task.id)
 }
 </script>
 
@@ -57,7 +80,7 @@ const editSubtask = (subtask) => {
         <div class="d-flex align-center">
           <v-checkbox
             :model-value="subtask.is_completed"
-            @update:model-value="subtaskStore.getSubTasksByTask(subtask.id)"
+            @update:model-value="toggleSubtask(subtask.id)"
             density="compact"
             hide-details
             :disabled="!canManageSubtasks"
@@ -82,7 +105,7 @@ const editSubtask = (subtask) => {
               </v-btn>
             </template>
             <v-list>
-              <v-list-item @click="editSubtask(subtask.id)">
+              <v-list-item @click="editSubtask(subtask)">
                 <v-list-item-title>Edit</v-list-item-title>
               </v-list-item>
               <v-list-item @click="deleteSubtask(subtask.id)">
@@ -95,5 +118,9 @@ const editSubtask = (subtask) => {
     </div>
   </div>
 
-  <SubtaskDialog v-model:showForm="showEditDialog" :subtaskData="subtaskData" />
+  <SubtaskDialog
+    v-model:showForm="showEditDialog"
+    :subtaskData="subtaskData"
+    :taskId="props.taskId || props.task?.id"
+  />
 </template>

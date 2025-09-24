@@ -100,7 +100,7 @@ const completedSubtasks = computed(() => {
         </div>
 
         <div v-if="props.task?.id">
-          <SubtaskList :task="props.task" />
+          <SubtaskList :task="props.task" :taskId="props.task.id" />
         </div>
       </v-card-text>
     </v-card>
