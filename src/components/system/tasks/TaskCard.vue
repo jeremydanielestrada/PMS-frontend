@@ -1,11 +1,15 @@
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import SubtaskList from './SubtaskList.vue'
+import SubtaskDialog from './SubtaskDialog.vue'
 
 const props = defineProps(['task'])
 defineEmits(['edit', 'delete'])
 
 const authStore = useAuthStore()
+
+const showForm = ref(false)
 
 const canManageTask = computed(() => {
   return authStore.isAdmin || props.task.assigned_to === authStore.userData?.id
@@ -45,53 +49,64 @@ const completedSubtasks = computed(() => {
 </script>
 
 <template>
-  <v-card class="task-card" elevation="2">
-    <div class="mt-2" v-if="task.subtasks && task.subtasks.length > 0">
-      <v-progress-linear :model-value="subtaskProgress" color="success" height="4" />
-      <div class="text-caption text-grey mt-1">
-        {{ completedSubtasks }}/{{ task.subtasks.length }} subtasks completed
-      </div>
-    </div>
-
-    <v-card-text>
-      <div class="d-flex justify-space-between align-start mb-2">
-        <h4 class="task-title">{{ task.title }}</h4>
-        <v-menu v-if="canManageTask">
-          <template v-slot:activator="{ props }">
-            <v-btn icon size="small" v-bind="props">
-              <v-icon>mdi-dots-vertical</v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item @click="$emit('edit', task)">
-              <v-list-item-title>Edit</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="$emit('delete', task.id)" v-if="canDeleteTask">
-              <v-list-item-title>Delete</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+  <div>
+    <v-card class="task-card" elevation="2">
+      <div class="mt-2" v-if="task.subtasks && task.subtasks.length > 0">
+        <v-progress-linear :model-value="subtaskProgress" color="success" height="4" />
+        <div class="text-caption text-grey mt-1">
+          {{ completedSubtasks }}/{{ task.subtasks.length }} subtasks completed
+        </div>
       </div>
 
-      <p class="task-description text-caption">{{ task.description }}</p>
+      <v-card-text>
+        <div class="d-flex justify-space-between align-start mb-2">
+          <h4 class="task-title">{{ task.title }}</h4>
+          <v-menu v-if="canManageTask">
+            <template v-slot:activator="{ props }">
+              <v-btn icon size="small" v-bind="props">
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item @click="$emit('edit', task)">
+                <v-list-item-title>Edit</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="$emit('delete', task.id)" v-if="canDeleteTask">
+                <v-list-item-title>Delete</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="showForm = true">
+                <v-list-item-title>Add subtask</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
 
-      <div class="d-flex justify-space-between align-center mt-2">
-        <v-chip size="small" :color="priorityColor">
-          {{ task.priority }}
-        </v-chip>
+        <p class="task-description text-caption">{{ task.description }}</p>
 
-        <v-avatar size="24" v-if="task.assigned_user">
-          <span class="text-caption">
-            {{ task.assigned_user.first_name[0] }}{{ task.assigned_user.last_name[0] }}
-          </span>
-        </v-avatar>
-      </div>
+        <div class="d-flex justify-space-between align-center mt-2">
+          <v-chip size="small" :color="priorityColor">
+            {{ task.priority }}
+          </v-chip>
 
-      <div class="text-caption text-grey mt-1" v-if="task.due_date">
-        Due: {{ new Date(task.due_date).toLocaleDateString() }}
-      </div>
-    </v-card-text>
-  </v-card>
+          <v-avatar size="24" v-if="task.assigned_user">
+            <span class="text-caption">
+              {{ task.assigned_user.first_name[0] }}{{ task.assigned_user.last_name[0] }}
+            </span>
+          </v-avatar>
+        </div>
+
+        <div class="text-caption text-grey mt-1" v-if="task.due_date">
+          Due: {{ new Date(task.due_date).toLocaleDateString() }}
+        </div>
+
+        <div v-if="props.task?.id">
+          <SubtaskList :task="props.task" />
+        </div>
+      </v-card-text>
+    </v-card>
+
+    <SubtaskDialog :task-id="props.task.id" v-model:showForm="showForm" />
+  </div>
 </template>
 
 <style scoped>

@@ -15,35 +15,37 @@ export const useSubTaskStore = defineStore('subtask', () => {
 
   // Create subtask
   async function createSubTask(subtaskData) {
-    const response = await api.post('/subtasks', subtaskData)
-    subtasks.value.push(response.data)
-    return response.data
+    try {
+      const response = await api.post('/subtasks', subtaskData)
+      if (response) return response.data
+    } catch (error) {
+      console.log(error.response.data?.message)
+    }
   }
 
   // Update subtask
   async function updateSubTask(subtaskId, subtaskData) {
-    const response = await api.put(`/subtasks/${subtaskId}`, subtaskData)
-    const index = subtasks.value.findIndex((s) => s.id === subtaskId)
-    if (index !== -1) {
-      subtasks.value[index] = response.data
+    try {
+      const response = await api.put(`/subtasks/${subtaskId}`, subtaskData)
+      if (response) return response.data
+    } catch (error) {
+      console.log(error.response.data?.message)
     }
-    return response.data
   }
 
   // Toggle completion
   async function toggleSubTaskComplete(subtaskId) {
-    const response = await api.put(`/subtasks/${subtaskId}/toggle`)
-    const index = subtasks.value.findIndex((s) => s.id === subtaskId)
-    if (index !== -1) {
-      subtasks.value[index] = response.data
+    try {
+      const response = await api.put(`/subtasks/${subtaskId}/toggle`)
+      if (response) return response.data
+    } catch (error) {
+      console.log(error.response.data?.message)
     }
-    return response.data
   }
-
   // Delete subtask
   async function deleteSubTask(subtaskId) {
-    await api.delete(`/subtasks/${subtaskId}`)
-    subtasks.value = subtasks.value.filter((s) => s.id !== subtaskId)
+    const response = await api.delete(`/subtasks/${subtaskId}`)
+    if (response) return response.data
   }
 
   // Get completion percentage for a task

@@ -3,7 +3,6 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useTaskStore } from '@/stores/task'
 import { useAuthStore } from '@/stores/auth'
 import { useProjectStore } from '@/stores/project'
-import SubtaskList from './SubtaskList.vue'
 
 const props = defineProps(['visible', 'task', 'projectId'])
 const emit = defineEmits(['update:visible', 'saved'])
@@ -172,9 +171,6 @@ const handleSubmit = async () => {
             </v-col>
           </v-row>
         </v-form>
-        <div v-if="isUpdate && props.task?.id">
-          <SubtaskList :task-id="props.task.id" :task="props.task" />
-        </div>
       </v-card-text>
 
       <v-card-actions>
