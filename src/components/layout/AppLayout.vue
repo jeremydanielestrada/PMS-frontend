@@ -76,7 +76,7 @@ const signOut = async () => {
           <v-icon>mdi-logout </v-icon>
         </v-btn>
 
-        <StatusNotifcations></StatusNotifcations>
+        <StatusNotifcations v-if="isUserLogged"></StatusNotifcations>
 
         <v-btn
           :prepend-icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"

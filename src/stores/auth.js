@@ -8,6 +8,10 @@ export const useAuthStore = defineStore('auth', () => {
   const userData = ref(null)
   const allUsers = ref(null)
   const authorizedUser = ref(null)
+  const search = ref(null)
+  const currentPage = ref(1)
+  const perPage = ref(10)
+  const totalPages = ref(1)
 
   // Initialize user data from localStorage
   const storedUser = localStorage.getItem('user')
@@ -31,9 +35,20 @@ export const useAuthStore = defineStore('auth', () => {
 
   //Get all users
   async function getAllUsers() {
-    const response = await api.get('/users')
-    allUsers.value = response.data
-    return response.data
+    try {
+      const response = await api.get('/users', {
+        params: {
+          search: search.value,
+          page: currentPage.value,
+          per_page: perPage.value,
+        },
+      })
+      totalPages.value = response.data.last_page
+      allUsers.value = response.data.data
+      return response.data
+    } catch (error) {
+      console.log(error.response.data?.message)
+    }
   }
 
   //Login user
@@ -97,5 +112,9 @@ export const useAuthStore = defineStore('auth', () => {
     allUsers,
     storedUser,
     authorizedUser,
+    currentPage,
+    totalPages,
+    perPage,
+    search,
   }
 })
