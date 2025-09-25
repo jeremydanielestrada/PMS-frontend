@@ -1,11 +1,12 @@
 <script setup>
 import AppLayout from '@/components/layout/AppLayout.vue'
+import ManageUsersList from '@/components/system/manage-users/ManageUsersList.vue'
 </script>
 
 <template>
   <AppLayout>
     <template #content>
-      <h1>Hello world</h1>
+      <ManageUsersList />
     </template>
   </AppLayout>
 </template>
