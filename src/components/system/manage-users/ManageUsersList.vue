@@ -19,7 +19,6 @@ const users = computed(() => {
 
 onMounted(async () => {
   await authStore.getAllUsers()
-  console.log('Users:', authStore.allUsers)
 })
 
 const changePage = async (page) => {
@@ -80,9 +79,7 @@ const onSearch = () => {
             </td>
 
             <!-- Tasks -->
-            <td>
-              {{ user.tasks?.map((t) => t.title).join(', ') || 'None' }}
-            </td>
+            <td>{{ user.taskCount }}</td>
 
             <td>
               <!-- <v-btn icon size="30" class="mx-2" @click="deleteDialog(project.id)">
@@ -97,5 +94,9 @@ const onSearch = () => {
       </v-table>
     </v-col>
   </v-row>
-  <PaginationLinks :totalPage="authStore.totalPages" @update:modelValue="changePage" />
+  <PaginationLinks
+    :totalPage="authStore.totalPages"
+    @update:modelValue="changePage"
+    v-if="users?.length > 0"
+  />
 </template>

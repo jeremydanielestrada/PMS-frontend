@@ -1,19 +1,14 @@
 <script setup>
 import { computed, onMounted } from 'vue'
 import { useRealtimeStore } from '@/stores/realtime'
-import { useAuthStore } from '@/stores/auth'
 
 const realtimeStore = useRealtimeStore()
-const authStore = useAuthStore()
 
 const unreadCount = computed(
   () => (realtimeStore.notifications || []).filter((n) => !n.is_read).length,
 )
 
 onMounted(async () => {
-  console.log('Token:', localStorage.getItem('token'))
-  console.log('Auth user:', authStore.userData)
-
   await realtimeStore.fetchNotifications()
   console.log('Final notifications:', realtimeStore.notifications)
 })
@@ -27,7 +22,7 @@ onMounted(async () => {
         <v-badge v-if="unreadCount > 0" :content="unreadCount" color="red" />
       </v-btn>
     </template>
-    <v-list max-width="300">
+    <v-list max-width="300" class="ma-3">
       <v-list-item
         v-for="notification in (realtimeStore.notifications || []).slice(0, 5)"
         :key="notification.id"
