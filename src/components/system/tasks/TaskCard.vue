@@ -12,7 +12,13 @@ const authStore = useAuthStore()
 const showForm = ref(false)
 
 const canManageTask = computed(() => {
-  return authStore.isAdmin || props.task.assigned_to === authStore.userData?.id
+  return (
+    authStore.isAdmin ||
+    props.task.assigned_to === authStore.userData?.id ||
+    authStore.authorizedUser?.project_members?.some(
+      (member) => member.project_id === props.task.project_id && member.role === 'leader',
+    )
+  )
 })
 
 const canDeleteTask = computed(() => {

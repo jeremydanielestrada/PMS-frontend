@@ -13,6 +13,10 @@ export const useRealtimeStore = defineStore('realtime', () => {
     })
   }
 
+  const listenToTaskAssigned = (projectId) => {
+    echo.channel(`project.${projectId}`).listen('TaskAssigned')
+  }
+
   const listenToNotifications = () => {
     const authStore = useAuthStore()
     echo.private(`App.Models.User.${authStore.userData.id}`).notification((notification) => {
@@ -55,6 +59,7 @@ export const useRealtimeStore = defineStore('realtime', () => {
     listenToProject,
     listenToNotifications,
     fetchNotifications,
+    listenToTaskAssigned,
     markAsRead,
   }
 })

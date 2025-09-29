@@ -9,16 +9,19 @@ export const useTaskStore = defineStore('task', () => {
   const currentTask = ref(null)
   const realtimeStore = useRealtimeStore()
 
-  //Realtime updates
-  const updateTaskRealtime = (updatedTask) => {
-    const index = tasks.value.findIndex((t) => t.id === updatedTask.id)
-    if (index !== -1) {
-      tasks.value[index] = updatedTask
-    }
-  }
+  // //Realtime updates
+  // const updateTaskRealtime = (updatedTask) => {
+  //   const index = tasks.value.findIndex((t) => t.id === updatedTask.id)
+  //   if (index !== -1) {
+  //     tasks.value[index] = updatedTask
+  //   }
+  // }
 
   const initRealtime = (projectId) => {
     realtimeStore.listenToProject(projectId)
+  }
+  const taskAssignedNotif = (projectId) => {
+    realtimeStore.listenToTaskAssigned(projectId)
   }
 
   //Get all tasks
@@ -38,18 +41,13 @@ export const useTaskStore = defineStore('task', () => {
   // Create task
   async function createTask(taskData) {
     const response = await api.post('/tasks', taskData)
-    tasks.value.push(response.data)
-    return response.data
+    if (response) return response.data
   }
 
   // Update task
   async function updateTask(taskId, taskData) {
     const response = await api.put(`/tasks/${taskId}`, taskData)
-    const index = tasks.value.findIndex((t) => t.id === taskId)
-    if (index !== -1) {
-      tasks.value[index] = response.data
-    }
-    return response.data
+    if (response) return response.data
   }
 
   // Update task status (for drag and drop)
@@ -87,7 +85,7 @@ export const useTaskStore = defineStore('task', () => {
     updateTaskStatus,
     deleteTask,
     fetchTasks,
-    updateTaskRealtime,
     initRealtime,
+    taskAssignedNotif,
   }
 })
