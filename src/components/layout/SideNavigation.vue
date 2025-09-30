@@ -13,8 +13,6 @@ const drawer = computed({
 const authStore = useAuthStore()
 const isAdmin = computed(() => authStore.isAdmin)
 
-const adminGroupOpen = ref(['Admin'])
-
 const admin = [
   ['Projects', 'mdi-package-variant', '/projects'],
   ['Dashboard', 'mdi-view-dashboard-outline', '/dashboard'],
@@ -29,12 +27,8 @@ const users = [
 
 <template>
   <v-navigation-drawer v-model="drawer">
-    <v-list v-model:opened="adminGroupOpen">
-      <v-list-group value="Admin" v-if="isAdmin" base-color="primary" class="border-b-thin">
-        <template v-slot:activator="{ props }">
-          <v-list-item v-bind="props" title="Admin"></v-list-item>
-        </template>
-
+    <v-list>
+      <div v-if="isAdmin">
         <v-list-item
           v-for="([title, icon, routes], i) in admin"
           :key="i"
@@ -45,7 +39,7 @@ const users = [
           ripple
           color="primary"
         ></v-list-item>
-      </v-list-group>
+      </div>
 
       <v-list-item
         v-for="([title, icon, routes], i) in users"
