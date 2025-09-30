@@ -86,7 +86,14 @@ const onTaskSaved = () => {
 <template>
   <div class="kanban-board">
     <v-row>
-      <v-col cols="4" v-for="(status, key) in columns" :key="key">
+      <v-col cols="12" lg="4" class="mx-auto">
+        <v-btn v-if="canCreateTasks" @click="createTask(key)" block class="mt-2" color="blue">
+          <v-icon>mdi-plus</v-icon> Add Task
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" lg="4" md="3" v-for="(status, key) in columns" :key="key">
         <v-card class="kanban-column" min-height="500">
           <v-card-title class="text-center">
             {{ status.title }}
@@ -108,16 +115,6 @@ const onTaskSaved = () => {
                 <TaskCard :task="task" @edit="editTask" @delete="deleteTask" class="mb-2" />
               </template>
             </draggable>
-
-            <v-btn
-              v-if="canCreateTasks"
-              @click="createTask(key)"
-              variant="outlined"
-              block
-              class="mt-2"
-            >
-              <v-icon>mdi-plus</v-icon> Add Task
-            </v-btn>
           </v-card-text>
         </v-card>
       </v-col>
