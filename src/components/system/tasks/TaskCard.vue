@@ -21,6 +21,16 @@ const canManageTask = computed(() => {
   )
 })
 
+const canViewSubtasks = computed(() => {
+  return (
+    authStore.isAdmin ||
+    props.task.assigned_to === authStore.userData?.id ||
+    authStore.authorizedUser?.project_members?.some(
+      (member) => member.project_id === props.task.project_id,
+    )
+  )
+})
+
 const canDeleteTask = computed(() => {
   return (
     authStore.isAdmin ||
@@ -105,7 +115,7 @@ const completedSubtasks = computed(() => {
           Due: {{ new Date(task.due_date).toLocaleDateString() }}
         </div>
 
-        <div v-if="props.task?.id">
+        <div v-if="props.task.id && canViewSubtasks">
           <SubtaskList :task="props.task" :taskId="props.task.id" />
         </div>
       </v-card-text>

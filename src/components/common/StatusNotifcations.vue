@@ -10,7 +10,6 @@ const unreadCount = computed(
 
 onMounted(async () => {
   await realtimeStore.fetchNotifications()
-  console.log('Final notifications:', realtimeStore.notifications)
 })
 </script>
 

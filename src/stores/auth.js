@@ -26,7 +26,6 @@ export const useAuthStore = defineStore('auth', () => {
   //Get authorized user
   async function getAuthorizedUser() {
     const response = await api.get('/user')
-    console.log('Auth user response:', response.data)
     if (response) {
       authorizedUser.value = response.data // Direct assignment, not nested
     }

@@ -8,9 +8,7 @@ export const useRealtimeStore = defineStore('realtime', () => {
   const notifications = ref([])
 
   const listenToProject = (projectId) => {
-    echo.channel(`project.${projectId}`).listen('TaskUpdated', (e) => {
-      console.log('Task updated:', e.task)
-    })
+    echo.channel(`project.${projectId}`).listen('TaskUpdated', (e) => {})
   }
 
   const listenToTaskAssigned = (projectId) => {
@@ -26,17 +24,13 @@ export const useRealtimeStore = defineStore('realtime', () => {
 
   const fetchNotifications = async () => {
     try {
-      console.log('Making API call to /api/notifications')
       const response = await api.get('/notifications')
-      console.log('Making API call to /api/notifications')
       // Check if response has data property (pagination)
       if (response.data.data) {
         notifications.value = response.data.data
       } else {
         notifications.value = response.data
       }
-
-      console.log('Notifications set to:', notifications.value)
     } catch (error) {
       console.error('Error fetching notifications:', error.response.data?.message)
     }

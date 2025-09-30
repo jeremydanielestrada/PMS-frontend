@@ -31,9 +31,11 @@ const completionPercentage = computed(() => {
 })
 
 onMounted(async () => {
-  if (props.taskId) {
-    await subtaskStore.getSubTasksByTask(props.taskId)
-  }
+  if (props.taskId) await subtaskStore.getSubTasksByTask(props.taskId)
+})
+
+const subtasksForThisTask = computed(() => {
+  return subtaskStore.getSubtasksForTask(props.taskId)
 })
 
 const editSubtask = (subtask) => {
@@ -60,6 +62,11 @@ const toggleSubtask = async (subtaskId) => {
 
 <template>
   <div class="subtask-list">
+    <!-- Debug info -->
+    <div class="text-caption mb-2">
+      Task ID: {{ taskId || task?.id }} | Subtasks: {{ subtasksForThisTask?.length || 0 }}
+    </div>
+
     <!-- Progress Bar -->
     <v-progress-linear
       v-if="subtaskStore.subtasks?.length > 0"
@@ -72,7 +79,7 @@ const toggleSubtask = async (subtaskId) => {
     <!-- Subtasks List -->
     <div class="subtasks">
       <v-card
-        v-for="subtask in subtaskStore.subtasks"
+        v-for="subtask in subtasksForThisTask"
         :key="subtask.id"
         class="mb-2 pa-2"
         variant="outlined"
