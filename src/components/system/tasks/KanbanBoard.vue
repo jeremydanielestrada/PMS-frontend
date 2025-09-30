@@ -86,7 +86,7 @@ const onTaskSaved = () => {
 <template>
   <div class="kanban-board">
     <v-row>
-      <v-col cols="12" lg="4" class="mx-auto">
+      <v-col cols="12" lg="4" md="6" class="mx-auto">
         <v-btn v-if="canCreateTasks" @click="createTask(key)" block class="mt-2" color="blue">
           <v-icon>mdi-plus</v-icon> Add Task
         </v-btn>
