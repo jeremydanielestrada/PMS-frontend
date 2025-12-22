@@ -23,15 +23,15 @@ const formData = ref({
 
 const handleSubmit = async () => {
   isLoading.value = true
+  errorSubmit.value = null // Clear previous errors
+
   try {
-    const response = await authStore.loginUser(formData.value)
-    if (response) {
-      formData.value = { ...formDataDefault }
-      router.replace('/projects')
-    }
+    await authStore.loginUser(formData.value)
+    formData.value = { ...formDataDefault }
+    router.replace('/projects')
   } catch (error) {
-    console.log(error, 'Error logging in')
-    errorSubmit.value = error.response?.data.message
+    // Handle error from store or API
+    errorSubmit.value = error.response?.data?.message || 'Invalid email or password.'
   } finally {
     isLoading.value = false
   }

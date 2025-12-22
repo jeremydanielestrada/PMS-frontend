@@ -13,6 +13,14 @@ export const useAuthStore = defineStore('auth', () => {
   const perPage = ref(10)
   const totalPages = ref(1)
 
+  // Helper function to clear auth data
+  function clearAuthData() {
+    token.value = null
+    userData.value = null
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+  }
+
   // Initialize user data from localStorage
   const storedUser = localStorage.getItem('user')
   if (storedUser) {
@@ -54,24 +62,24 @@ export const useAuthStore = defineStore('auth', () => {
   async function loginUser(formData) {
     try {
       const response = await api.post('/login', formData)
+      const { token: authToken, user } = response.data
 
-      // Only set data if response is successful
-      if (response.data && response.data.token) {
-        token.value = response.data.token
-        userData.value = response.data.user
-        localStorage.setItem('token', response.data.token)
-        localStorage.setItem('user', JSON.stringify(response.data.user))
-        return response.data
-      } else {
+      // Validate response
+      if (!authToken || !user) {
         throw new Error('Invalid login response')
       }
+
+      // Update state and storage
+      token.value = authToken
+      userData.value = user
+      localStorage.setItem('token', authToken)
+      localStorage.setItem('user', JSON.stringify(user))
+
+      return response.data
     } catch (error) {
       // Clear any existing data on failed login
-      token.value = null
-      userData.value = null
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      throw error // Re-throw to be handled by component
+      clearAuthData()
+      throw error
     }
   }
 
@@ -87,9 +95,7 @@ export const useAuthStore = defineStore('auth', () => {
   //Log out  user
   async function logoutUser() {
     const response = await api.post('/logout')
-    localStorage.removeItem('token') // Clear from localStorage
-    localStorage.removeItem('user') // Clear from localStorage
-    token.value = null // Clear reactive ref
+    clearAuthData()
     return response.data
   }
 
